@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>望潮 Mini App</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="../assets/chart.css">
+<style>
+body{font-size:14px}header{padding:10px 12px}h1{font-size:17px}main{padding:0 10px 24px}
+.grid{grid-template-columns:1fr}.machine{padding:8px 10px;margin:10px 0}
+.chart svg{touch-action:none}.tip{max-width:260px}
+</style></head><body>
+<header><h1>望潮 · 值班</h1><p id="gen">加载中…</p></header>
+<main id="root"></main>
+<script>
+window.WANGCHAO_HOOKS = false || new URLSearchParams(location.search).get("hooks") === "1";
+function wangchaoBoot(rootEl, genEl, genFmt) {
+  const data = window.WANGCHAO_DATA;
+  genEl.textContent = genFmt(data);
+  renderMachines(data, rootEl);
+  if (window.WANGCHAO_HOOKS) window.__wangchao = {charts: models, ready: true, data};
+  document.body.dataset.ready = "1";
+}
+</script>
+<script src="../assets/data.js"></script>
+<script src="../assets/chart.js"></script>
+<script>
+// 离开 Telegram（SDK 加载失败或不在 WebView 里）也能正常打开
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) {
+  try { tg.ready(); tg.expand && tg.expand(); } catch (e) {}
+  const th = tg.themeParams || {}; const st = document.documentElement.style;
+  if (th.bg_color) st.setProperty("--bg", th.bg_color);
+  if (th.secondary_bg_color) st.setProperty("--paper", th.secondary_bg_color);
+  if (th.text_color) st.setProperty("--ink", th.text_color);
+  if (th.hint_color) st.setProperty("--muted", th.hint_color);
+  document.body.style.background = "var(--bg)"; document.body.style.color = "var(--ink)";
+}
+wangchaoBoot(document.getElementById("root"), document.getElementById("gen"),
+  d => `截至 ${bj(d.anchor)}（北京时间）· 点按或按住拖动看读数`);
+</script></body></html>

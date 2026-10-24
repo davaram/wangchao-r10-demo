@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>望潮 r10 演示</title>
+<link rel="stylesheet" href="assets/chart.css"></head><body>
+<header><h1>望潮 · r10 规则核心演示</h1>
+<p>近 24 小时 5 分钟原始点（北京时间显示）。圆点颜色 = 逐点 breach（R1/R2 状态机级别）；虚线 = 警告/严重阈值；灰色区 = 断流。鼠标悬停或按住拖动查看 time / value / breach / state / relation。</p>
+<div class="legend"><span><i class="dot" style="background:var(--warn)"></i>breach=warning</span><span><i class="dot" style="background:var(--crit)"></i>breach=critical</span><span id="gen"></span>
+<a href="mini/">手机版 /mini</a></div></header>
+<main id="root"></main>
+<script>
+window.WANGCHAO_HOOKS = false || new URLSearchParams(location.search).get("hooks") === "1";
+function wangchaoBoot(rootEl, genEl, genFmt) {
+  const data = window.WANGCHAO_DATA;
+  genEl.textContent = genFmt(data);
+  renderMachines(data, rootEl);
+  if (window.WANGCHAO_HOOKS) window.__wangchao = {charts: models, ready: true, data};
+  document.body.dataset.ready = "1";
+}
+</script>
+<script src="assets/data.js"></script>
+<script src="assets/chart.js"></script>
+<script>wangchaoBoot(document.getElementById("root"), document.getElementById("gen"),
+  d => `数据截至 ${bj(d.anchor)}（北京时间） · ${d.engine} · 静态构建`);</script>
+</body></html>
